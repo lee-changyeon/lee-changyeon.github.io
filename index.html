@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이창연 | 연결LAB</title>
+<meta name="description" content="현장을 아는 AI 실전 기획자 이창연의 개인 홈페이지. 사람의 경험을, AI와 콘텐츠로 연결합니다.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23e8573f'/%3E%3Ccircle cx='11' cy='16' r='5' fill='none' stroke='white' stroke-width='3'/%3E%3Ccircle cx='21' cy='16' r='5' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #faf7f2;
+    --bg-alt: #f2ede4;
+    --surface: #ffffff;
+    --text: #1d2433;
+    --muted: #5d6677;
+    --line: #e3ddd2;
+    --accent: #e8573f;
+    --accent-soft: #fde6e0;
+    --navy: #1f2a44;
+    --shadow: 0 10px 30px rgba(31, 42, 68, .08);
+    --radius: 18px;
+  }
+  :root[data-theme="dark"] {
+    --bg: #12161f;
+    --bg-alt: #181d28;
+    --surface: #1e2431;
+    --text: #eef0f4;
+    --muted: #a3abba;
+    --line: #2c3444;
+    --accent: #ff7a62;
+    --accent-soft: #3a2420;
+    --navy: #0c0f16;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+  body {
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    word-break: keep-all;
+    transition: background .3s, color .3s;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- 헤더 ---------- */
+  header {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s;
+  }
+  header.scrolled { border-color: var(--line); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { font-weight: 800; font-size: 1.1rem; letter-spacing: -.02em; display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--accent); display: grid; place-items: center; }
+  .nav ul { display: flex; gap: 6px; list-style: none; }
+  .nav ul a { padding: 6px 12px; border-radius: 999px; font-size: .92rem; color: var(--muted); transition: .2s; }
+  .nav ul a:hover, .nav ul a.active { color: var(--accent); background: var(--accent-soft); }
+  .nav-tools { display: flex; gap: 8px; align-items: center; }
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--text); cursor: pointer; font-size: 1rem;
+  }
+  #menuBtn { display: none; }
+
+  /* ---------- 히어로 ---------- */
+  .hero { padding: 150px 0 100px; position: relative; overflow: hidden; }
+  .hero::before {
+    content: ""; position: absolute; width: 520px; height: 520px; right: -140px; top: 40px;
+    background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+    z-index: -1;
+  }
+  .eyebrow { font-size: .8rem; font-weight: 700; letter-spacing: .18em; color: var(--accent); text-transform: uppercase; }
+  .hero h1 { font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1.25; letter-spacing: -.03em; margin: 16px 0 20px; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .typing { min-height: 1.7em; font-size: 1.15rem; color: var(--muted); }
+  .typing span { color: var(--text); font-weight: 700; border-right: 2px solid var(--accent); padding-right: 3px; animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { border-color: transparent; } }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 36px; }
+  .tag { padding: 6px 14px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: .9rem; font-weight: 600; }
+  .btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { padding: 12px 22px; border-radius: 12px; font-weight: 700; transition: transform .2s, box-shadow .2s; display: inline-block; }
+  .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-ghost { border: 1px solid var(--line); background: var(--surface); }
+
+  /* ---------- 공통 섹션 ---------- */
+  section { padding: 90px 0; }
+  section.alt { background: var(--bg-alt); }
+  .sec-head { margin-bottom: 44px; }
+  .sec-head h2 { font-size: clamp(1.6rem, 3.5vw, 2.3rem); letter-spacing: -.02em; line-height: 1.35; margin-top: 8px; }
+  .sec-head p { color: var(--muted); margin-top: 10px; }
+  .grid { display: grid; gap: 20px; }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 28px; transition: transform .25s, box-shadow .25s;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .num { font-size: .85rem; font-weight: 800; color: var(--accent); }
+  .card h3 { font-size: 1.2rem; margin: 6px 0 8px; letter-spacing: -.01em; }
+  .card p { color: var(--muted); font-size: .95rem; }
+
+  /* 등장 애니메이션 */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s, transform .7s; }
+  .reveal.show { opacity: 1; transform: none; }
+
+  /* ---------- 소개 ---------- */
+  .profile { display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; }
+  .profile-card {
+    background: var(--navy); color: #fff; border-radius: var(--radius); padding: 32px; text-align: center;
+  }
+  .avatar {
+    width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 18px;
+    background: linear-gradient(135deg, var(--accent), #f5a35c);
+    display: grid; place-items: center; font-size: 2.6rem; font-weight: 800;
+  }
+  .profile-card h3 { font-size: 1.5rem; }
+  .profile-card .role { color: #f5b7a8; font-weight: 600; margin: 4px 0 14px; }
+  .profile-card p { font-size: .92rem; opacity: .85; }
+  .timeline { list-style: none; position: relative; padding-left: 28px; }
+  .timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+  .timeline li { position: relative; padding: 0 0 26px; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -27px; top: 6px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg); border: 3px solid var(--accent);
+  }
+  .timeline .when { font-size: .82rem; font-weight: 800; color: var(--accent); letter-spacing: .05em; }
+  .timeline h4 { font-size: 1.1rem; margin: 2px 0; }
+  .timeline p { color: var(--muted); font-size: .95rem; }
+
+  /* ---------- 브랜드 ---------- */
+  .brand-box {
+    background: var(--navy); color: #fff; border-radius: 24px; padding: 48px; text-align: center;
+  }
+  .brand-box .name { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; letter-spacing: -.03em; }
+  .formula { display: flex; justify-content: center; align-items: center; gap: 14px; margin: 20px 0 28px; flex-wrap: wrap; }
+  .formula b { padding: 8px 20px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 1.05rem; }
+  .formula i { font-style: normal; color: var(--accent); font-weight: 800; font-size: 1.3rem; }
+  .persona { display: inline-block; padding: 10px 22px; border-radius: 12px; background: var(--accent); font-weight: 700; }
+  .hashtags { margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .hashtags span { color: #f5b7a8; font-weight: 600; }
+
+  .principle {
+    margin-top: 28px; padding: 18px 24px; border-radius: 14px; border: 1px dashed var(--accent);
+    background: var(--accent-soft); font-weight: 600; text-align: center;
+  }
+  .quote {
+    margin-top: 32px; font-size: clamp(1.1rem, 2.4vw, 1.4rem); font-weight: 700; text-align: center;
+    padding: 28px; border-left: 4px solid var(--accent); background: var(--surface); border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  /* ---------- 타깃 ---------- */
+  .target-main { background: var(--accent); color: #fff; border: none; }
+  .target-main p, .target-main .num { color: rgba(255,255,255,.9); }
+
+  /* ---------- 시리즈 탭 ---------- */
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tab {
+    padding: 10px 18px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface);
+    color: var(--text); font: inherit; font-weight: 700; cursor: pointer; transition: .2s;
+  }
+  .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .panel { display: none; }
+  .panel.active { display: block; animation: fade .4s; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .panel .card { padding: 36px; }
+  .panel .cat { display: inline-block; font-size: .82rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+  .panel h3 { font-size: 1.5rem; margin: 12px 0; }
+  .example { margin-top: 14px; padding: 16px 20px; border-radius: 12px; background: var(--bg-alt); }
+  .example small { color: var(--accent); font-weight: 800; letter-spacing: .08em; }
+  .flow { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 22px; }
+  .flow span { padding: 8px 16px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); font-weight: 600; font-size: .92rem; }
+  .flow i { font-style: normal; color: var(--accent); font-weight: 800; }
+
+  /* ---------- 목표 ---------- */
+  .goal { text-align: center; }
+  .goal .big { font-size: 2.6rem; font-weight: 800; color: var(--accent); letter-spacing: -.03em; line-height: 1.2; }
+  .goal .label { font-weight: 800; margin-top: 4px; }
+  .note { font-size: .85rem; color: var(--muted); margin-top: 14px; text-align: center; }
+  .promise { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+  .promise span { padding: 10px 18px; border-radius: 12px; background: var(--navy); color: #fff; font-weight: 600; font-size: .95rem; }
+
+  /* ---------- 로드맵 ---------- */
+  .roadmap .card { border-top: 4px solid var(--accent); }
+  .roadmap ul { list-style: none; margin-top: 10px; }
+  .roadmap li { color: var(--muted); font-size: .93rem; padding-left: 16px; position: relative; }
+  .roadmap li::before { content: "•"; color: var(--accent); position: absolute; left: 0; }
+  .progress { height: 6px; border-radius: 99px; background: var(--line); margin: 0 0 28px; overflow: hidden; }
+  .progress div { height: 100%; width: 0; background: var(--accent); transition: width 1.6s ease; }
+
+  /* ---------- 연락 ---------- */
+  .contact { text-align: center; }
+  .contact h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -.02em; margin: 10px 0 14px; }
+  .contact p { color: var(--muted); margin-bottom: 28px; }
+
+  footer { padding: 30px 0; border-top: 1px solid var(--line); text-align: center; color: var(--muted); font-size: .85rem; }
+
+  #toTop {
+    position: fixed; right: 20px; bottom: 20px; width: 46px; height: 46px; border-radius: 50%;
+    border: none; background: var(--accent); color: #fff; font-size: 1.2rem; cursor: pointer;
+    box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  #toTop.show { opacity: 1; pointer-events: auto; }
+
+  /* ---------- 반응형 ---------- */
+  @media (max-width: 880px) {
+    .g3, .g4 { grid-template-columns: repeat(2, 1fr); }
+    .profile { grid-template-columns: 1fr; }
+    #menuBtn { display: block; }
+    .nav ul {
+      position: absolute; top: 64px; left: 0; right: 0; flex-direction: column; gap: 0;
+      background: var(--bg); border-bottom: 1px solid var(--line); padding: 10px 16px;
+      display: none;
+    }
+    .nav ul.open { display: flex; }
+    .nav ul a { display: block; padding: 12px; }
+  }
+  @media (max-width: 560px) {
+    .g2, .g3, .g4 { grid-template-columns: 1fr; }
+    .hero { padding: 120px 0 70px; }
+    section { padding: 64px 0; }
+    .brand-box { padding: 32px 20px; }
+    .wrap { padding: 0 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header id="header">
+  <div class="wrap nav">
+    <a href="#home" class="logo">
+      <span class="logo-mark">
+        <svg width="18" height="18" viewBox="0 0 32 32"><circle cx="11" cy="16" r="6" fill="none" stroke="#fff" stroke-width="3.5"/><circle cx="21" cy="16" r="6" fill="none" stroke="#fff" stroke-width="3.5"/></svg>
+      </span>
+      이창연의 연결LAB
+    </a>
+    <ul id="menu">
+      <li><a href="#about">소개</a></li>
+      <li><a href="#brand">채널</a></li>
+      <li><a href="#content">콘텐츠</a></li>
+      <li><a href="#series">시리즈</a></li>
+      <li><a href="#goals">목표</a></li>
+      <li><a href="#roadmap">로드맵</a></li>
+    </ul>
+    <div class="nav-tools">
+      <button class="icon-btn" id="themeBtn" aria-label="테마 전환">🌙</button>
+      <button class="icon-btn" id="menuBtn" aria-label="메뉴 열기">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 히어로 -->
+  <section class="hero" id="home">
+    <div class="wrap">
+      <p class="eyebrow">Creator · Facilitator · AI Planner</p>
+      <h1>사람의 경험을,<br><em>AI와 콘텐츠</em>로 연결하다.</h1>
+      <p class="typing">안녕하세요, 저는 <span id="typed"></span></p>
+      <div class="tags">
+        <span class="tag">#AI실전활용</span>
+        <span class="tag">#사람중심기획</span>
+        <span class="tag">#콘텐츠실험</span>
+      </div>
+      <div class="btns">
+        <a href="#about" class="btn btn-primary">더 알아보기</a>
+        <a href="#series" class="btn btn-ghost">대표 시리즈 보기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 소개 -->
+  <section class="alt" id="about">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Profile</p>
+        <h2>현장을 설계하고, 사람의 목소리를 듣고,<br>AI로 결과물을 만드는 사람</h2>
+      </div>
+      <div class="profile">
+        <div class="profile-card reveal">
+          <div class="avatar">이</div>
+          <h3>이창연</h3>
+          <p class="role">원탁토론 전문 퍼실리테이터</p>
+          <p>사람 중심의 소통과 실전형 AI 기획을 잇는 크리에이터</p>
+        </div>
+        <ul class="timeline reveal">
+          <li>
+            <div class="when">10 YEARS</div>
+            <h4>원탁토론·시민참여 퍼실리테이션</h4>
+            <p>10년간 토론을 설계하며 사람들의 질문과 요구를 들어왔습니다.</p>
+          </li>
+          <li>
+            <div class="when">2026.09</div>
+            <h4>보령시청 원탁토론 총괄 PD</h4>
+            <p>3일간의 원탁토론을 총괄하며 현장 설계와 운영을 이끌었습니다.</p>
+          </li>
+          <li>
+            <div class="when">CREATE</div>
+            <h4>AI 영상·쇼츠·마케팅 콘텐츠 기획·제작</h4>
+            <p>AI를 활용해 영상, 글, 교육 자료를 기획하고 장면을 구성합니다.</p>
+          </li>
+          <li>
+            <div class="when">BUILD</div>
+            <h4>「도착하면 뭐하지?」 서비스·MVP 기획</h4>
+            <p>여행지 도착 후의 사용자 경험 문제를 서비스로 풀어보는 프로젝트입니다.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 채널 브랜드 -->
+  <section id="brand">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Channel Brand</p>
+        <h2>채널명, 페르소나와 키워드</h2>
+      </div>
+      <div class="brand-box reveal">
+        <p class="eyebrow" style="color:#f5b7a8">채널명</p>
+        <div class="name">이창연의 연결LAB</div>
+        <div class="formula"><b>사람</b><i>×</i><b>AI</b><i>×</i><b>실행</b></div>
+        <span class="persona">PERSONA · 현장을 아는 AI 실전 기획자</span>
+        <div class="hashtags"><span>#AI실전활용</span><span>#사람중심기획</span><span>#콘텐츠실험</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 콘텐츠 방향 -->
+  <section class="alt" id="content">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Content Direction</p>
+        <h2>AI를 보여주는 채널이 아니라,<br>AI로 실제 일을 해보는 과정을 보여주는 채널</h2>
+        <p>대표 카테고리 · 실전 AI 활용 × 사람 중심 기획</p>
+      </div>
+      <div class="grid g3">
+        <div class="card reveal"><div class="num">01</div><h3>AI 콘텐츠 제작</h3><p>영상·쇼츠·광고 기획<br>스토리보드, 문구, 시각자료</p></div>
+        <div class="card reveal"><div class="num">02</div><h3>소통과 퍼실리테이션</h3><p>질문·경청·토론 진행<br>현장에서 쓰는 회의 설계</p></div>
+        <div class="card reveal"><div class="num">03</div><h3>아이디어 실행</h3><p>고객 문제 정의·시장 분석<br>서비스 기획과 MVP 실험</p></div>
+      </div>
+      <div class="principle reveal">핵심 원칙 · 1개 주제 → 직접 적용 → 따라 할 수 있는 결과물</div>
+
+      <div class="sec-head reveal" style="margin-top:72px">
+        <p class="eyebrow">Why</p>
+        <h2>왜 이 카테고리인가?</h2>
+        <p>경력, 제작 경험, 창업 실험이 하나의 콘텐츠 흐름으로 이어지기 때문입니다.</p>
+      </div>
+      <div class="grid g3">
+        <div class="card reveal"><div class="num">01 · 사람</div><p>10년간 토론을 설계하며 사람들의 질문과 요구를 들음</p></div>
+        <div class="card reveal"><div class="num">02 · 콘텐츠</div><p>AI를 활용해 영상·글·교육 자료를 기획하고 제작</p></div>
+        <div class="card reveal"><div class="num">03 · 실행</div><p>행사 운영과 서비스 아이디어를 실제 프로젝트로 구체화</p></div>
+      </div>
+      <blockquote class="quote reveal">“도구 설명에서 끝나지 않고,<br>사람의 문제를 해결하는 콘텐츠를 만들고 싶다.”</blockquote>
+    </div>
+  </section>
+
+  <!-- 타깃 -->
+  <section id="target">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Target</p>
+        <h2>누구에게 가장 먼저 말할 것인가?</h2>
+        <p>모두를 위한 AI 채널보다, 현장에서 바로 써야 하는 사람부터 시작합니다.</p>
+      </div>
+      <div class="grid g3">
+        <div class="card target-main reveal"><div class="num">1차 핵심 타깃</div><h3>강사 · 교육/행사 기획자 · 현장 실무자</h3><p>AI의 필요성은 느끼지만 막상 내 업무에 적용하는 첫 단계가 어려운 사람</p></div>
+        <div class="card reveal"><div class="num">확장 타깃</div><h3>소상공인 · 1인 창업자</h3><p>홍보 콘텐츠와 사업 아이디어를 스스로 만들고 싶은 사람</p></div>
+        <div class="card reveal"><div class="num">확장 타깃</div><h3>AI 콘텐츠 입문자</h3><p>어려운 설명보다 순서가 필요한 사람</p></div>
+      </div>
+      <div class="principle reveal">타깃의 공통 바람 · “나도 이 과정을 따라 하면 바로 만들 수 있겠구나.”</div>
+    </div>
+  </section>
+
+  <!-- 대표 시리즈 -->
+  <section class="alt" id="series">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Series</p>
+        <h2>이런 콘텐츠를 꾸준히 만듭니다</h2>
+        <p>콘텐츠 이름과 편성 방식은 시작 단계의 운영 제안입니다.</p>
+      </div>
+      <div class="reveal">
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="0" role="tab">01 AI로 한 편 완성</button>
+          <button class="tab" data-tab="1" role="tab">02 진행자의 질문노트</button>
+          <button class="tab" data-tab="2" role="tab">03 아이디어 실행일지</button>
+        </div>
+        <div class="panel active">
+          <div class="card">
+            <span class="cat">AI 기반 콘텐츠 제작</span>
+            <h3>AI로 한 편 완성</h3>
+            <p>기획부터 결과물까지, AI를 활용해 콘텐츠 한 편을 처음부터 끝까지 만들어 봅니다.</p>
+            <div class="example"><small>EXAMPLE</small><br>상품 홍보 숏폼을 5컷 스토리보드로 바꾸기</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="card">
+            <span class="cat">퍼실리테이션 · 소통</span>
+            <h3>진행자의 질문노트</h3>
+            <p>현장에서 사람들의 참여를 이끌어내는 질문과 회의 설계 노하우를 나눕니다.</p>
+            <div class="example"><small>EXAMPLE</small><br>원탁토론의 참여를 여는 첫 질문 3가지</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="card">
+            <span class="cat">창업 · 서비스 기획</span>
+            <h3>아이디어 실행일지</h3>
+            <p>아이디어를 실제 서비스로 만들어 가는 과정을 있는 그대로 기록합니다.</p>
+            <div class="example"><small>EXAMPLE</small><br>「도착하면 뭐하지?」 고객 여정 설계해 보기</div>
+          </div>
+        </div>
+        <div class="flow">
+          <strong>포맷</strong>
+          <span>핵심 문제 10초</span><i>→</i><span>실제 적용 과정</span><i>→</i><span>결과·주의점 정리</span>
+        </div>
+      </div>
+
+      <div class="sec-head reveal" style="margin-top:72px">
+        <p class="eyebrow">Difference</p>
+        <h2>이미 경험한 현장이 콘텐츠 소재입니다</h2>
+        <p>실제 활동과 진행 중인 기획을 재구성하되, 공개 가능한 범위만 활용합니다.</p>
+      </div>
+      <div class="grid g3">
+        <div class="card reveal"><div class="num">FIELD</div><h3>보령시청 원탁토론</h3><p>현장 설계·운영 경험을 퍼실리테이션 인사이트로</p></div>
+        <div class="card reveal"><div class="num">CREATE</div><h3>AI 영상·홍보 콘텐츠</h3><p>제품 쇼츠·장면 구성 과정을 따라 하는 제작 실습으로</p></div>
+        <div class="card reveal"><div class="num">BUILD</div><h3>「도착하면 뭐하지?」</h3><p>도착 후 사용자 경험 문제를 서비스 기획 사례로</p></div>
+      </div>
+      <div class="flow reveal" style="justify-content:center">
+        <span>현장의 질문</span><i>›</i><span>AI 활용 과정</span><i>›</i><span>결과와 한계 공유</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1년 목표 -->
+  <section id="goals">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Goals</p>
+        <h2>첫 1년, 이 네 가지를 해내겠습니다</h2>
+      </div>
+      <div class="grid g4">
+        <div class="card goal reveal"><div class="big"><span class="count" data-to="52">0</span>편</div><div class="label">꾸준함</div><p>주 1회 정기 업로드</p></div>
+        <div class="card goal reveal"><div class="big"><span class="count" data-to="3">0</span>개</div><div class="label">정체성</div><p>대표 콘텐츠 시리즈 운영</p></div>
+        <div class="card goal reveal"><div class="big"><span class="count" data-to="4">0</span>회</div><div class="label">성장</div><p>분기별 성과 점검·개선</p></div>
+        <div class="card goal reveal"><div class="big"><span class="count" data-to="1000">0</span>명</div><div class="label">도전</div><p>구독자 목표에 도전</p></div>
+      </div>
+      <p class="note">※ 위 숫자는 달성 실적이 아니라 운영을 위한 제안 목표입니다.</p>
+      <div class="promise reveal">
+        <span>✔ 검증한 정보만</span>
+        <span>✔ 누구나 따라 할 수 있게</span>
+        <span>✔ 현장 당사자의 권리 보호</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 로드맵 -->
+  <section class="alt" id="roadmap">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Roadmap</p>
+        <h2>이제, 연결을 콘텐츠로 증명할 차례</h2>
+        <p>시작 시점을 기준으로 한 12개월 운영안입니다.</p>
+      </div>
+      <div class="progress"><div id="bar"></div></div>
+      <div class="grid g4 roadmap">
+        <div class="card reveal"><div class="num">1–3개월</div><h3>정체성 구축</h3><ul><li>시리즈 3종 파일럿</li><li>주간 제작 루틴 정착</li></ul></div>
+        <div class="card reveal"><div class="num">4–6개월</div><h3>포맷 정교화</h3><ul><li>시청 반응 확인</li><li>반복되는 질문 수집</li></ul></div>
+        <div class="card reveal"><div class="num">7–9개월</div><h3>사례 확장</h3><ul><li>현장 적용 사례 보강</li><li>시청자 질문에 답하기</li></ul></div>
+        <div class="card reveal"><div class="num">10–12개월</div><h3>성과 리뷰</h3><ul><li>인기 주제 재구성</li><li>다음 연도 기획 확정</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 연락 -->
+  <section class="contact" id="contact">
+    <div class="wrap reveal">
+      <p class="eyebrow">Let's Connect</p>
+      <h2>사람과 AI, 그리고 실행을 잇는 일.<br>함께 연결해 볼까요?</h2>
+      <p>강의·퍼실리테이션·AI 콘텐츠 기획 협업을 환영합니다.</p>
+      <div class="btns" style="justify-content:center">
+        <a href="https://github.com/lee-changyeon" class="btn btn-primary" target="_blank" rel="noopener">GitHub 방문하기</a>
+        <a href="#home" class="btn btn-ghost">처음으로</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© <span id="year"></span> 이창연 · 연결LAB. All rights reserved.</div>
+</footer>
+
+<button id="toTop" aria-label="맨 위로">↑</button>
+
+<script>
+  // 타이핑 효과
+  const words = ["원탁토론 퍼실리테이터입니다.", "AI 실전 기획자입니다.", "콘텐츠 크리에이터입니다.", "이창연입니다."];
+  const typed = document.getElementById("typed");
+  let w = 0, c = 0, deleting = false;
+  function type() {
+    const word = words[w];
+    typed.textContent = word.slice(0, c);
+    if (!deleting && c < word.length) c++;
+    else if (deleting && c > 0) c--;
+    else if (!deleting) { deleting = true; return setTimeout(type, 1600); }
+    else { deleting = false; w = (w + 1) % words.length; }
+    setTimeout(type, deleting ? 45 : 95);
+  }
+  type();
+
+  // 다크 모드 (저장된 설정 → 시스템 설정 순)
+  const root = document.documentElement;
+  const themeBtn = document.getElementById("themeBtn");
+  function setTheme(t) {
+    root.dataset.theme = t;
+    themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
+    try { localStorage.setItem("theme", t); } catch (e) {}
+  }
+  let saved = null;
+  try { saved = localStorage.getItem("theme"); } catch (e) {}
+  setTheme(saved || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+  themeBtn.addEventListener("click", () => setTheme(root.dataset.theme === "dark" ? "light" : "dark"));
+
+  // 모바일 메뉴
+  const menu = document.getElementById("menu");
+  document.getElementById("menuBtn").addEventListener("click", () => menu.classList.toggle("open"));
+  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => menu.classList.remove("open")));
+
+  // 시리즈 탭
+  const tabs = document.querySelectorAll(".tab");
+  const panels = document.querySelectorAll(".panel");
+  tabs.forEach(tab => tab.addEventListener("click", () => {
+    tabs.forEach(t => t.classList.remove("active"));
+    panels.forEach(p => p.classList.remove("active"));
+    tab.classList.add("active");
+    panels[tab.dataset.tab].classList.add("active");
+  }));
+
+  // 숫자 카운트업
+  function countUp(el) {
+    const to = +el.dataset.to, dur = 1400, start = performance.now();
+    (function step(now) {
+      const p = Math.min((now - start) / dur, 1);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))).toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+    })(start);
+  }
+
+  // 스크롤 등장 애니메이션
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("show");
+      e.target.querySelectorAll(".count").forEach(countUp);
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+  // 로드맵 진행 막대
+  const bar = document.getElementById("bar");
+  new IntersectionObserver((entries, obs) => {
+    if (entries[0].isIntersecting) { bar.style.width = "100%"; obs.disconnect(); }
+  }, { threshold: 0.5 }).observe(bar.parentElement);
+
+  // 헤더 테두리, 현재 섹션 메뉴 표시, 맨 위로 버튼
+  const header = document.getElementById("header");
+  const toTop = document.getElementById("toTop");
+  const links = [...menu.querySelectorAll("a")];
+  const sections = links.map(a => document.querySelector(a.getAttribute("href")));
+  window.addEventListener("scroll", () => {
+    const y = window.scrollY;
+    header.classList.toggle("scrolled", y > 10);
+    toTop.classList.toggle("show", y > 600);
+    let current = -1;
+    sections.forEach((s, i) => { if (s.offsetTop - 120 <= y) current = i; });
+    links.forEach((a, i) => a.classList.toggle("active", i === current));
+  });
+  toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
